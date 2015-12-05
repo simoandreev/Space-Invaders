@@ -13,7 +13,7 @@
 SKNode *_mainLayer;
 SKSpriteNode *_cannon;
 }
-
+static const CGFloat SHOOT_SPEED = 1000.0;
 static inline CGVector radiansToVector(CGFloat radians)
 {
     CGVector vector;
@@ -46,6 +46,9 @@ static inline CGVector radiansToVector(CGFloat radians)
     SKAction *rotateCannon = [SKAction sequence:@[[SKAction rotateByAngle:M_PI duration:2],
                                                   [SKAction rotateByAngle:-M_PI duration:2]]];
     [_cannon runAction:[SKAction repeatActionForever:rotateCannon]];
+    
+    // Turn off gravity.
+    self.physicsWorld.gravity = CGVectorMake(0.0, 0.0);
 }
 
 -(void)shoot
@@ -55,7 +58,13 @@ static inline CGVector radiansToVector(CGFloat radians)
     CGVector rotationVector = radiansToVector(_cannon.zRotation);
     ball.position = CGPointMake(_cannon.position.x + (_cannon.size.width   * rotationVector.dx),
                                 _cannon.position.y + (_cannon.size.width * 0.5 * rotationVector.dy));
+    
+    ball.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:6.0];
+    ball.physicsBody.velocity = CGVectorMake(rotationVector.dx * SHOOT_SPEED, rotationVector.dy * SHOOT_SPEED);
+    
     [_mainLayer addChild:ball];
+    
+    
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
