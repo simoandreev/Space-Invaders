@@ -26,7 +26,7 @@ static const uint32_t kCCShieldCategory = 0x1 << 3;
 static const CGFloat SHOOT_SPEED = 1000.0;
 static const CGFloat kCCHaloLowAngle = 200.0 * M_PI / 180.0;
 static const CGFloat kCCHaloHighAngle = 340.0 * M_PI / 180.0;
-static const CGFloat kCCHaloSpeed = 1100.0;
+static const CGFloat kCCHaloSpeed = 300.0;
 int numShieldsBlocks;
 
 
