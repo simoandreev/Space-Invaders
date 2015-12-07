@@ -122,6 +122,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     
     //Add Life Bar
     SKSpriteNode *lifeBar = [SKSpriteNode spriteNodeWithImageNamed:@"BlueBar"];
+    //lifeBar.size = CGSizeMake(self.frame.size.width-25, 10);
     lifeBar.position = CGPointMake(self.size.width * 0.5, 70);
     lifeBar.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(-lifeBar.size.width * 0.5, 0) toPoint:CGPointMake(lifeBar.size.width * 0.5, 0)];
     lifeBar.physicsBody.categoryBitMask = kCCLifeBarCategory;
@@ -142,6 +143,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         ball.physicsBody.velocity = CGVectorMake(rotationVector.dx * SHOOT_SPEED, rotationVector.dy * SHOOT_SPEED);
         ball.physicsBody.categoryBitMask = kCCBallCategory;
         ball.physicsBody.collisionBitMask = kCCEdgeCategory;
+        ball.physicsBody.contactTestBitMask = kCCEdgeCategory;
         ball.name = @"ball";
         ball.physicsBody.restitution = 1.0;
         ball.physicsBody.linearDamping = 0.0;
@@ -217,7 +219,6 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
     }
-    
     //    if (firstBody.categoryBitMask == kCCHaloCategory && secondBody.categoryBitMask == kCCShieldCategory) {
     //        // Collision between halo and shield.
     //        [self addExplosion:firstBody.node.position];
@@ -231,6 +232,10 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [self addExplosion:secondBody.node.position withName:@"LifeBarExplosion"];
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
+    }
+    
+    if (firstBody.categoryBitMask == kCCBallCategory && secondBody.categoryBitMask == kCCEdgeCategory) {
+        [self addExplosion:contact.contactPoint withName:@"BounceExplosion"];
     }
 }
 

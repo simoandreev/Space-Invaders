@@ -10,6 +10,7 @@
 		5D7D8AB51C15BAC7007D58E1 /* HaloExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */; };
 		5D7D8AB61C15BAC7007D58E1 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB41C15BAC7007D58E1 /* spark.png */; };
 		5D7D8AB81C15DF10007D58E1 /* LifeBarExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */; };
+		5D7D8ABA1C15E4BF007D58E1 /* BounceExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB91C15E4BF007D58E1 /* BounceExplosion.sks */; };
 		E3AE1ABF1C12E17B00C3EB59 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1ABE1C12E17B00C3EB59 /* main.m */; };
 		E3AE1AC21C12E17B00C3EB59 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1AC11C12E17B00C3EB59 /* AppDelegate.m */; };
 		E3AE1AC51C12E17B00C3EB59 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1AC41C12E17B00C3EB59 /* GameScene.m */; };
@@ -37,6 +38,7 @@
 		5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HaloExplosion.sks; sourceTree = "<group>"; };
 		5D7D8AB41C15BAC7007D58E1 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LifeBarExplosion.sks; sourceTree = "<group>"; };
+		5D7D8AB91C15E4BF007D58E1 /* BounceExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BounceExplosion.sks; sourceTree = "<group>"; };
 		E3AE1ABA1C12E17B00C3EB59 /* Space Invaders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space Invaders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3AE1ABE1C12E17B00C3EB59 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E3AE1AC01C12E17B00C3EB59 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */,
 				5D7D8AB41C15BAC7007D58E1 /* spark.png */,
 				5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */,
+				5D7D8AB91C15E4BF007D58E1 /* BounceExplosion.sks */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 				E3AE1AF21C13010E00C3EB59 /* Starfield@2x.png in Resources */,
 				E3AE1AC71C12E17B00C3EB59 /* GameScene.sks in Resources */,
 				E3AE1AE81C13010E00C3EB59 /* Ammo1@2x.png in Resources */,
+				5D7D8ABA1C15E4BF007D58E1 /* BounceExplosion.sks in Resources */,
 				E3AE1AD21C12E17B00C3EB59 /* LaunchScreen.storyboard in Resources */,
 				E3AE1AEF1C13010E00C3EB59 /* BlueBar@2x.png in Resources */,
 				E3AE1AF41C13013300C3EB59 /* spacecannonassets in Resources */,
