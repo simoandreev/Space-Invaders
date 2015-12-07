@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5D7D8AB51C15BAC7007D58E1 /* HaloExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */; };
 		5D7D8AB61C15BAC7007D58E1 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB41C15BAC7007D58E1 /* spark.png */; };
+		5D7D8AB81C15DF10007D58E1 /* LifeBarExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */; };
 		E3AE1ABF1C12E17B00C3EB59 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1ABE1C12E17B00C3EB59 /* main.m */; };
 		E3AE1AC21C12E17B00C3EB59 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1AC11C12E17B00C3EB59 /* AppDelegate.m */; };
 		E3AE1AC51C12E17B00C3EB59 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = E3AE1AC41C12E17B00C3EB59 /* GameScene.m */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HaloExplosion.sks; sourceTree = "<group>"; };
 		5D7D8AB41C15BAC7007D58E1 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LifeBarExplosion.sks; sourceTree = "<group>"; };
 		E3AE1ABA1C12E17B00C3EB59 /* Space Invaders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space Invaders.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3AE1ABE1C12E17B00C3EB59 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E3AE1AC01C12E17B00C3EB59 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				E3AE1ABE1C12E17B00C3EB59 /* main.m */,
 				5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */,
 				5D7D8AB41C15BAC7007D58E1 /* spark.png */,
+				5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 				E3AE1AED1C13010E00C3EB59 /* Ball@2x.png in Resources */,
 				E3AE1ACD1C12E17B00C3EB59 /* Main.storyboard in Resources */,
 				5D7D8AB51C15BAC7007D58E1 /* HaloExplosion.sks in Resources */,
+				5D7D8AB81C15DF10007D58E1 /* LifeBarExplosion.sks in Resources */,
 				E3AE1AE71C13010E00C3EB59 /* Ammo0@2x.png in Resources */,
 				E3AE1AEC1C13010E00C3EB59 /* Ammo5@2x.png in Resources */,
 				E3AE1AF11C13010E00C3EB59 /* Halo@2x.png in Resources */,
