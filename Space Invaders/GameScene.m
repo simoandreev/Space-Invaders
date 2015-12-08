@@ -65,11 +65,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         _gameOver = YES;
         _scoreLabel.hidden = YES;
         
-        // Load top score
-        _userDefaults = [NSUserDefaults standardUserDefaults];
-        self._bufferValueForScore = [NSNumber numberWithInt:[_userDefaults integerForKey:kCCKeyTopScore]];
-        _menu.topScore = [self._bufferValueForScore integerValue];
-        NSLog(@"High Score is : %d", _menu.topScore);
+        
         // Add background.
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"Starfield"];
         background.size = self.frame.size;
@@ -170,6 +166,9 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         _menu.position = CGPointMake(self.size.width * 0.5, self.size.height - 220);
         [self addChild:_menu];
         
+        // Load top score
+        _userDefaults = [NSUserDefaults standardUserDefaults];
+        _menu.topScore = [_userDefaults integerForKey:kCCKeyTopScore];
     }
     
     return  self;
@@ -266,7 +265,15 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         firstBody = contact.bodyB;
         secondBody = contact.bodyA;
     }
-    if ((firstBody.categoryBitMask == kCCHaloCategory && secondBody.categoryBitMask == kCCBallCategory) || secondBody.categoryBitMask == kCCShieldCategory) {
+    if (firstBody.categoryBitMask == kCCHaloCategory &&secondBody.categoryBitMask == kCCShieldCategory) {
+        // Collision between halo and ball.
+        [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
+        [self runAction:_explosionSound];
+
+        [firstBody.node removeFromParent];
+        [secondBody.node removeFromParent];
+    }
+    if (firstBody.categoryBitMask == kCCHaloCategory && secondBody.categoryBitMask == kCCBallCategory) {
         // Collision between halo and ball.
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
@@ -315,7 +322,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     }
 }
 
--(void)setScore:(int)score
+-(void)setScore:(NSInteger)score
 {
     //Setter - score
     _score = score;
