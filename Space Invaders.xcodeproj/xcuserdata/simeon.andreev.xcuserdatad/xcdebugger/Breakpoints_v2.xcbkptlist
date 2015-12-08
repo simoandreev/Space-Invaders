@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Space Invaders/GameScene.m"
-            timestampString = "471191841.966722"
+            timestampString = "471283399.420905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
-            landmarkName = "-didMoveToView:"
+            startingLineNumber = "358"
+            endingLineNumber = "358"
+            landmarkName = "-gameOver"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Space Invaders/GameScene.m"
-            timestampString = "471191842.612611"
+            filePath = "Space Invaders/Menu.m"
+            timestampString = "471282991.724007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
-            landmarkName = "-didMoveToView:"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "-setTopScore:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
