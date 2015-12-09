@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D7A742B1C181B3300C8A629 /* Ball.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7A742A1C181B3300C8A629 /* Ball.m */; };
+		5D7A742D1C182C4400C8A629 /* HaloX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7A742C1C182C4400C8A629 /* HaloX@2x.png */; };
 		5D7D8AB51C15BAC7007D58E1 /* HaloExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */; };
 		5D7D8AB61C15BAC7007D58E1 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB41C15BAC7007D58E1 /* spark.png */; };
 		5D7D8AB81C15DF10007D58E1 /* LifeBarExplosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */; };
@@ -45,6 +47,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5D7A74291C181B3300C8A629 /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
+		5D7A742A1C181B3300C8A629 /* Ball.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ball.m; sourceTree = "<group>"; };
+		5D7A742C1C182C4400C8A629 /* HaloX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HaloX@2x.png"; sourceTree = "<group>"; };
 		5D7D8AB31C15BAC7007D58E1 /* HaloExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HaloExplosion.sks; sourceTree = "<group>"; };
 		5D7D8AB41C15BAC7007D58E1 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		5D7D8AB71C15DF10007D58E1 /* LifeBarExplosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = LifeBarExplosion.sks; sourceTree = "<group>"; };
@@ -114,6 +119,7 @@
 		5D7D8AFD1C170986007D58E1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				5D7A742C1C182C4400C8A629 /* HaloX@2x.png */,
 				5D7D8ADE1C1708B6007D58E1 /* Ammo1@2x.png */,
 				5D7D8ADF1C1708B6007D58E1 /* Ammo2@2x.png */,
 				5D7D8AE01C1708B6007D58E1 /* Ammo3@2x.png */,
@@ -174,6 +180,8 @@
 				E3AE1AC91C12E17B00C3EB59 /* GameViewController.m */,
 				5D7D8ADA1C1707A2007D58E1 /* Menu.h */,
 				5D7D8ADB1C1707A2007D58E1 /* Menu.m */,
+				5D7A74291C181B3300C8A629 /* Ball.h */,
+				5D7A742A1C181B3300C8A629 /* Ball.m */,
 				E3AE1ACB1C12E17B00C3EB59 /* Main.storyboard */,
 				E3AE1ACE1C12E17B00C3EB59 /* Assets.xcassets */,
 				E3AE1AD01C12E17B00C3EB59 /* LaunchScreen.storyboard */,
@@ -256,6 +264,7 @@
 				5D7D8ABA1C15E4BF007D58E1 /* BounceExplosion.sks in Resources */,
 				5D7D8AD61C17022F007D58E1 /* DeepExplosion.caf in Resources */,
 				5D7D8AF81C1708B6007D58E1 /* PlayButton@2x.png in Resources */,
+				5D7A742D1C182C4400C8A629 /* HaloX@2x.png in Resources */,
 				E3AE1AD21C12E17B00C3EB59 /* LaunchScreen.storyboard in Resources */,
 				5D7D8AEE1C1708B6007D58E1 /* Ammo1@2x.png in Resources */,
 				5D7D8AF91C1708B6007D58E1 /* ScoreBoard@2x.png in Resources */,
@@ -293,6 +302,7 @@
 			files = (
 				5D7D8ADC1C1707A2007D58E1 /* Menu.m in Sources */,
 				E3AE1ACA1C12E17B00C3EB59 /* GameViewController.m in Sources */,
+				5D7A742B1C181B3300C8A629 /* Ball.m in Sources */,
 				E3AE1AC21C12E17B00C3EB59 /* AppDelegate.m in Sources */,
 				E3AE1AC51C12E17B00C3EB59 /* GameScene.m in Sources */,
 				E3AE1ABF1C12E17B00C3EB59 /* main.m in Sources */,

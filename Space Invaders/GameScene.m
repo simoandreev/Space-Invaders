@@ -8,6 +8,7 @@
 
 #import "GameScene.h"
 #import "Menu.h"
+#import "Ball.h"
 
 @implementation GameScene {
     SKNode *_mainLayer;
@@ -36,7 +37,7 @@ static const uint32_t kCCLifeBarCategory = 0x1 << 4;
 static const CGFloat SHOOT_SPEED = 1000.0;
 static const CGFloat kCCHaloLowAngle = 200.0 * M_PI / 180.0;
 static const CGFloat kCCHaloHighAngle = 340.0 * M_PI / 180.0;
-static const CGFloat kCCHaloSpeed = 300.0;
+static const CGFloat kCCHaloSpeed = 100.0;
 
 static NSString * const kCCKeyTopScore = @"TopScore";
 
@@ -68,9 +69,10 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         
         // Add background.
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"Starfield"];
-        background.size = self.frame.size;
-        background.position = CGPointZero;
-        background.anchorPoint = CGPointZero;
+        //background.size = self.frame.size;
+        background.size = CGSizeMake(self.frame.size.width + 10, self.frame.size.height);
+        background.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));;
+        //background.anchorPoint = CGPointZero;
         background.blendMode = SKBlendModeReplace;
         [self addChild:background];
         
@@ -187,7 +189,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         self.ammo--;
         
         // Create ball node.
-        SKSpriteNode *ball = [SKSpriteNode spriteNodeWithImageNamed:@"Ball"];
+        Ball *ball = [Ball spriteNodeWithImageNamed:@"Ball"];
         CGVector rotationVector = radiansToVector(_cannon.zRotation);
         ball.position = CGPointMake(_cannon.position.x + (_cannon.size.width   * rotationVector.dx),
                                     _cannon.position.y + (_cannon.size.width * 0.5 * rotationVector.dy));
@@ -207,7 +209,8 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         NSString *ballTrailPath = [[NSBundle mainBundle] pathForResource:@"BallTrail" ofType:@"sks"];
         SKEmitterNode *ballTrail = [NSKeyedUnarchiver unarchiveObjectWithFile:ballTrailPath];
         ballTrail.targetNode = _mainLayer;
-        [ball addChild:ballTrail];
+        [_mainLayer addChild:ballTrail];
+        ball.trail = ballTrail;
     }
    
 }
@@ -234,6 +237,14 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     halo.physicsBody.linearDamping = 0.0;
     halo.physicsBody.friction = 0.0;
     halo.name = @"halo";
+    
+    // Random point multiplier
+    if (!_gameOver && arc4random_uniform(6) == 0) {
+        halo.texture = [SKTexture textureWithImageNamed:@"HaloX"];
+        halo.userData = [[NSMutableDictionary alloc] init];
+        [halo.userData setValue:@YES forKey:@"Multiplier"];
+    }
+    
     [_mainLayer addChild:halo];
 }
 
@@ -261,6 +272,10 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     
     // Remove unused nodes.
     [_mainLayer enumerateChildNodesWithName:@"ball" usingBlock:^(SKNode *node, BOOL *stop) {
+        
+        if ([node respondsToSelector:@selector(updateTrail)]) {
+            [node performSelector:@selector(updateTrail) withObject:nil afterDelay:0.0];
+        }
         if (!CGRectContainsPoint(self.frame, node.position)) {
             [node removeFromParent];
         }
@@ -277,6 +292,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
 {
     SKPhysicsBody *firstBody;
     SKPhysicsBody *secondBody;
+    
     if (contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask) {
         firstBody = contact.bodyA;
         secondBody = contact.bodyB;
@@ -284,6 +300,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         firstBody = contact.bodyB;
         secondBody = contact.bodyA;
     }
+    
     if (firstBody.categoryBitMask == kCCHaloCategory &&secondBody.categoryBitMask == kCCShieldCategory) {
         // Collision between halo and ball.
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
@@ -293,11 +310,18 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
     }
+    
     if (firstBody.categoryBitMask == kCCHaloCategory && secondBody.categoryBitMask == kCCBallCategory) {
         // Collision between halo and ball.
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
         self.score++;
+        
+        if ([[firstBody.node.userData valueForKey:@"Multiplier"] boolValue]) {
+            
+        }
+        
+        firstBody.categoryBitMask = 0;
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
     }
@@ -317,6 +341,13 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     }
     
     if (firstBody.categoryBitMask == kCCBallCategory && secondBody.categoryBitMask == kCCEdgeCategory) {
+        if ([firstBody.node isKindOfClass:[Ball class]]) {
+            ((Ball*)firstBody.node).bounces++;
+            if (((Ball*)firstBody.node).bounces > 3) {
+                [firstBody.node removeFromParent];
+            }
+        }
+        
         [self addExplosion:contact.contactPoint withName:@"BounceExplosion"];
         [self runAction:_bounceSound];
     }
