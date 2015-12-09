@@ -22,26 +22,33 @@
     SKAction *_explosionSound;
     SKAction *_laserSound;
     SKAction *_zapSound;
+    SKAction *_shieldUpSound;
     Menu *_menu;
     NSUserDefaults *_userDefaults;
-    
+    SKLabelNode *_pointLabel;
+    NSMutableArray *_shieldPool;
+    int _killCount;
 }
 
 
-static const uint32_t kCCHaloCategory = 0x1 << 0;
-static const uint32_t kCCBallCategory = 0x1 << 1;
-static const uint32_t kCCEdgeCategory = 0x1 << 2;
-static const uint32_t kCCShieldCategory = 0x1 << 3;
-static const uint32_t kCCLifeBarCategory = 0x1 << 4;
+static const uint32_t kCCHaloCategory     = 0x1 << 0;
+static const uint32_t kCCBallCategory     = 0x1 << 1;
+static const uint32_t kCCEdgeCategory     = 0x1 << 2;
+static const uint32_t kCCShieldCategory   = 0x1 << 3;
+static const uint32_t kCCLifeBarCategory  = 0x1 << 4;
+static const uint32_t kCCShieldUpCategory = 0x1 << 5;
+static const uint32_t kCCMultiUpCategory  = 0x1 << 6;
 
 static const CGFloat SHOOT_SPEED = 1000.0;
 static const CGFloat kCCHaloLowAngle = 200.0 * M_PI / 180.0;
 static const CGFloat kCCHaloHighAngle = 340.0 * M_PI / 180.0;
 static const CGFloat kCCHaloSpeed = 100.0;
 
+
 static NSString * const kCCKeyTopScore = @"TopScore";
 
 int numShieldsBlocks;
+int numScaleBackground;
 
 
 static inline CGVector radiansToVector(CGFloat radians)
@@ -63,14 +70,23 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         //Set initial values
         self.ammo = 5;
         self.score = 0;
+        self.pointValue = 1;
         _gameOver = YES;
         _scoreLabel.hidden = YES;
         
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+        {
+            numScaleBackground = 30;
+            numShieldsBlocks = 15;
+        } else {
+            numScaleBackground = 10;
+            numShieldsBlocks = 6;
+        }
         
         // Add background.
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"Starfield"];
         //background.size = self.frame.size;
-        background.size = CGSizeMake(self.frame.size.width + 10, self.frame.size.height);
+        background.size = CGSizeMake(self.frame.size.width + numScaleBackground, self.frame.size.height);
         background.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));;
         //background.anchorPoint = CGPointZero;
         background.blendMode = SKBlendModeReplace;
@@ -119,17 +135,14 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         self.ammo = 5;
         SKAction *incrementAmmo = [SKAction sequence:@[[SKAction waitForDuration:1],
                                                        [SKAction runBlock:^{
-            self.ammo++;
+            if (!self.multiMode) {
+                self.ammo++;
+            }
         }]]];
         [self runAction:[SKAction repeatActionForever:incrementAmmo]];
         
         // Setup shields
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            numShieldsBlocks = 15;
-        } else {
-            numShieldsBlocks = 6;
-        }
+        
         if(!_gameOver) {
             for (int i = 0; i < numShieldsBlocks; i++) {
                 SKSpriteNode *shield = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
@@ -143,18 +156,25 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             
             //Add Life Bar
             SKSpriteNode *lifeBar = [SKSpriteNode spriteNodeWithImageNamed:@"BlueBar"];
-            //lifeBar.size = CGSizeMake(self.frame.size.width-25, 10);
             lifeBar.position = CGPointMake(self.size.width * 0.5, 70);
-            lifeBar.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(-lifeBar.size.width * 0.5, 0) toPoint:CGPointMake(lifeBar.size.width * 0.5, 0)];
+            lifeBar.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(-lifeBar.size.width , 0) toPoint:CGPointMake(lifeBar.size.width , 0)];
+            
             lifeBar.physicsBody.categoryBitMask = kCCLifeBarCategory;
             [_mainLayer addChild:lifeBar];
         }
-            // Setup score display
-            _scoreLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
-            _scoreLabel.position = CGPointMake(15, 10);
-            _scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
-            _scoreLabel.fontSize = 15;
-            [self addChild:_scoreLabel];
+        // Setup score display
+        _scoreLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
+        _scoreLabel.position = CGPointMake(15, 10);
+        _scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        _scoreLabel.fontSize = 15;
+        [self addChild:_scoreLabel];
+        
+        // Setup point multiplier label
+        _pointLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
+        _pointLabel.position = CGPointMake(15, 30);
+        _pointLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        _pointLabel.fontSize = 15;
+        [self addChild:_pointLabel];
         
         // Setup sounds
         _bounceSound = [SKAction playSoundFileNamed:@"Bounce.caf" waitForCompletion:NO];
@@ -162,6 +182,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         _explosionSound = [SKAction playSoundFileNamed:@"Explosion.caf" waitForCompletion:NO];
         _laserSound = [SKAction playSoundFileNamed:@"Laser.caf" waitForCompletion:NO];
         _zapSound = [SKAction playSoundFileNamed:@"Zap.caf" waitForCompletion:NO];
+        _shieldUpSound = [SKAction playSoundFileNamed:@"ShieldUp.caf" waitForCompletion:NO];
         
         // Setup menu
         _menu = [[Menu alloc] init];
@@ -171,6 +192,25 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         // Load top score
         _userDefaults = [NSUserDefaults standardUserDefaults];
         _menu.topScore = [_userDefaults integerForKey:kCCKeyTopScore];
+        
+        // Setup shield pool
+        _shieldPool = [[NSMutableArray alloc] init];
+        
+        // Setup shields
+        for (int i = 0; i < numShieldsBlocks; i++) {
+            SKSpriteNode *shield = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+            shield.name = @"shield";
+            shield.position = CGPointMake(35 + (50 *i), 90);
+            shield.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(42, 9)];
+            shield.physicsBody.categoryBitMask = kCCShieldCategory;
+            shield.physicsBody.collisionBitMask = 0;
+            [_shieldPool addObject:shield];
+        }
+        
+        // Create spawn shield power up action.
+        SKAction *spawnShieldPowerUp = [SKAction sequence:@[[SKAction waitForDuration:5 withRange:4],
+                                                            [SKAction performSelector:@selector(spawnShieldPowerUp) onTarget:self]]];
+        [self runAction:[SKAction repeatActionForever:spawnShieldPowerUp]];
     }
     
     return  self;
@@ -185,8 +225,8 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
 -(void)shoot
 {
 
-    if (self.ammo > 0) {
-        self.ammo--;
+//    if (self.ammo > 0) {
+//        self.ammo--;
         
         // Create ball node.
         Ball *ball = [Ball spriteNodeWithImageNamed:@"Ball"];
@@ -197,7 +237,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         ball.physicsBody.velocity = CGVectorMake(rotationVector.dx * SHOOT_SPEED, rotationVector.dy * SHOOT_SPEED);
         ball.physicsBody.categoryBitMask = kCCBallCategory;
         ball.physicsBody.collisionBitMask = kCCEdgeCategory;
-        ball.physicsBody.contactTestBitMask = kCCEdgeCategory;
+        ball.physicsBody.contactTestBitMask = kCCEdgeCategory | kCCShieldUpCategory | kCCMultiUpCategory;
         ball.name = @"ball";
         ball.physicsBody.restitution = 1.0;
         ball.physicsBody.linearDamping = 0.0;
@@ -208,10 +248,11 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         // Create trail.
         NSString *ballTrailPath = [[NSBundle mainBundle] pathForResource:@"BallTrail" ofType:@"sks"];
         SKEmitterNode *ballTrail = [NSKeyedUnarchiver unarchiveObjectWithFile:ballTrailPath];
+        ballTrail.name = @"ballTrail";
         ballTrail.targetNode = _mainLayer;
-        [_mainLayer addChild:ballTrail];
-        ball.trail = ballTrail;
-    }
+        [ball addChild:ballTrail];
+        //ball.trail = ballTrail;
+//    }
    
 }
 
@@ -238,8 +279,20 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     halo.physicsBody.friction = 0.0;
     halo.name = @"halo";
     
-    // Random point multiplier
-    if (!_gameOver && arc4random_uniform(6) == 0) {
+    int haloCount = 0;
+    for (SKNode *node in _mainLayer.children) {
+        if ([node.name isEqualToString:@"halo"]) {
+            haloCount++;
+        }
+    }
+    
+    if (haloCount == 4) {
+        // Create bomb powerup
+        halo.texture = [SKTexture textureWithImageNamed:@"HaloBomb"];
+        halo.userData = [[NSMutableDictionary alloc] init];
+        [halo.userData setValue:@YES forKey:@"Bomb"];
+    } else if (!_gameOver && arc4random_uniform(6) == 0) {
+         // Random point multiplier
         halo.texture = [SKTexture textureWithImageNamed:@"HaloX"];
         halo.userData = [[NSMutableDictionary alloc] init];
         [halo.userData setValue:@YES forKey:@"Multiplier"];
@@ -248,15 +301,14 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     [_mainLayer addChild:halo];
 }
 
-
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
-    for (UITouch *touch in touches) {
+    //for (UITouch *touch in touches) {
         if (!_gameOver) {
             _didShoot = YES;
         }
-    }
+    //}
 }
 
 -(void)update:(CFTimeInterval)currentTime {
@@ -265,8 +317,21 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
 
 -(void)didSimulatePhysics
 {
+    // Shoot.
     if (_didShoot) {
-        [self shoot];
+        if (self.ammo > 0) {
+            self.ammo--;
+            [self shoot];
+            if (self.multiMode) {
+                for (int i = 1; i < 5; i++) {
+                    [self performSelector:@selector(shoot) withObject:nil afterDelay:0.1 * i];
+                }
+                if (self.ammo == 0) {
+                    self.multiMode = NO;
+                    self.ammo = 5;
+                }
+            }
+        }
         _didShoot = NO;
     }
     
@@ -278,6 +343,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         }
         if (!CGRectContainsPoint(self.frame, node.position)) {
             [node removeFromParent];
+            self.pointValue = 1;
         }
     }];
     
@@ -286,6 +352,24 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             [node removeFromParent];
         }
     }];
+    
+    [_mainLayer enumerateChildNodesWithName:@"shieldUp" usingBlock:^(SKNode *node, BOOL *stop) {
+        if (node.position.x + node.frame.size.width < 0) {
+            [node removeFromParent];
+        }
+    }];
+    
+    [_mainLayer enumerateChildNodesWithName:@"multiUp" usingBlock:^(SKNode *node, BOOL *stop) {
+        if (node.position.x - node.frame.size.width > self.size.width) {
+            [node removeFromParent];
+        }
+    }];
+    //[_mainLayer enumerateChildNodesWithName:@"ballTrail" usingBlock:^(SKNode *node, BOOL *stop) {
+        //if (!CGRectContainsPoint(self.frame, node.position)) {
+        //    [node removeFromParent];
+        //}
+    //}];
+    
 }
 
 -(void)didBeginContact:(SKPhysicsContact *)contact
@@ -306,8 +390,16 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
         
+        if ([[firstBody.node.userData valueForKey:@"Bomb"] boolValue]) {
+            // Remove all shields.
+            [_mainLayer enumerateChildNodesWithName:@"shield" usingBlock:^(SKNode *node, BOOL *stop) {
+                [node removeFromParent];
+            }];
+        }
+        
         firstBody.categoryBitMask = 0;
         [firstBody.node removeFromParent];
+        [_shieldPool addObject:secondBody.node];
         [secondBody.node removeFromParent];
     }
     
@@ -315,10 +407,21 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         // Collision between halo and ball.
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
-        self.score++;
+        self.score += self.pointValue;
         
         if ([[firstBody.node.userData valueForKey:@"Multiplier"] boolValue]) {
-            
+            self.pointValue++;
+        } else if ([[firstBody.node.userData valueForKey:@"Bomb"] boolValue]) {
+            firstBody.node.name = nil;
+            [_mainLayer enumerateChildNodesWithName:@"halo" usingBlock:^(SKNode *node, BOOL *stop) {
+                [self addExplosion:node.position withName:@"HaloExplosion"];
+                [node removeFromParent];
+            }];
+        }
+        
+        _killCount++;
+        if (_killCount % 2 == 0) {
+            [self spawnMultiShotPowerUp];
         }
         
         firstBody.categoryBitMask = 0;
@@ -345,11 +448,32 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             ((Ball*)firstBody.node).bounces++;
             if (((Ball*)firstBody.node).bounces > 3) {
                 [firstBody.node removeFromParent];
+                self.pointValue = 1;
             }
         }
         
         [self addExplosion:contact.contactPoint withName:@"BounceExplosion"];
         [self runAction:_bounceSound];
+    }
+    
+    if (firstBody.categoryBitMask == kCCBallCategory && secondBody.categoryBitMask == kCCShieldUpCategory) {
+        // Hit a shield power up.
+        if (_shieldPool.count > 0 ) {
+            int randomIndex = arc4random_uniform((int)_shieldPool.count);
+            [_mainLayer addChild:[_shieldPool objectAtIndex:randomIndex]];
+            [_shieldPool removeObjectAtIndex:randomIndex];
+            [self runAction:_shieldUpSound];
+        }
+        [firstBody.node removeFromParent];
+        [secondBody.node removeFromParent];
+    }
+    
+    if (firstBody.categoryBitMask == kCCBallCategory && secondBody.categoryBitMask == kCCMultiUpCategory) {
+        self.multiMode = YES;
+        [self runAction:_shieldUpSound];
+        self.ammo = 5;
+        [firstBody.node removeFromParent];
+        [secondBody.node removeFromParent];
     }
 }
 
@@ -380,11 +504,27 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _scoreLabel.text = [NSString stringWithFormat:@"Score: %d", score];
 }
 
+-(void)setPointValue:(int)pointValue
+{
+     //Setter - points
+    _pointValue = pointValue;
+    _pointLabel.text = [NSString stringWithFormat:@"Points: x%d", pointValue];
+}
+
 -(void)newGame
 {
+    // Add all shields from pool to scene.
+    while (_shieldPool.count > 0) {
+        [_mainLayer addChild:[_shieldPool objectAtIndex:0]];
+        [_shieldPool removeObjectAtIndex:0];
+    }
+    
     self.ammo = 5;
     self.score = 0;
-    
+    self.pointValue = 1;
+    _killCount = 0;
+    self.multiMode = NO;
+    _killCount = 0;
     
     [_mainLayer removeAllChildren];
     // Setup shields
@@ -408,6 +548,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _gameOver = NO;
     _menu.hidden = YES;
     _scoreLabel.hidden = NO;
+    _pointLabel.hidden = NO;
 }
 
 -(void)gameOver
@@ -427,12 +568,17 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [node removeFromParent];
     }];
     [_mainLayer enumerateChildNodesWithName:@"shield" usingBlock:^(SKNode *node, BOOL *stop) {
+        [_shieldPool addObject:node];
+        [node removeFromParent];
+    }];
+    [_mainLayer enumerateChildNodesWithName:@"multiUp" usingBlock:^(SKNode *node, BOOL *stop) {
         [node removeFromParent];
     }];
     
     _gameOver = YES;
     _menu.hidden = NO;
     _scoreLabel.hidden = YES;
+    _pointLabel.hidden = YES;
 
 }
 
@@ -447,4 +593,45 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     }
 }
 
+-(void)spawnShieldPowerUp
+{
+    if (_shieldPool.count > 0) {
+        SKSpriteNode *shieldUp = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
+        shieldUp.name = @"shieldUp";
+        shieldUp.position = CGPointMake(self.size.width + shieldUp.size.width, randomInRange(150, self.size.height - 100));
+        shieldUp.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(42, 9)];
+        shieldUp.physicsBody.categoryBitMask = kCCShieldUpCategory;
+        shieldUp.physicsBody.collisionBitMask = 0;
+        shieldUp.physicsBody.velocity = CGVectorMake(-100, randomInRange(-40, 40));
+        shieldUp.physicsBody.angularVelocity = M_PI;
+        shieldUp.physicsBody.linearDamping = 0.0;
+        shieldUp.physicsBody.angularDamping = 0.0;
+        [_mainLayer addChild:shieldUp];
+    }
+}
+
+-(void)spawnMultiShotPowerUp
+{
+    SKSpriteNode *multiUp = [SKSpriteNode spriteNodeWithImageNamed:@"MultiShotPowerUp"];
+    multiUp.name = @"multiUp";
+    multiUp.position = CGPointMake(-multiUp.size.width, randomInRange(150, self.size.height - 100));
+    multiUp.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:12.0];
+    multiUp.physicsBody.categoryBitMask = kCCMultiUpCategory;
+    multiUp.physicsBody.collisionBitMask = 0;
+    multiUp.physicsBody.velocity = CGVectorMake(100, randomInRange(-40, 40));
+    multiUp.physicsBody.angularVelocity = M_PI;
+    multiUp.physicsBody.linearDamping = 0.0;
+    multiUp.physicsBody.angularDamping = 0.0;
+    [_mainLayer addChild:multiUp];
+}
+
+-(void)setMultiMode:(BOOL)multiMode
+{
+    _multiMode = multiMode;
+    if (multiMode) {
+        _cannon.texture = [SKTexture textureWithImageNamed:@"GreenCannon"];
+    } else {
+        _cannon.texture = [SKTexture textureWithImageNamed:@"Cannon"];
+    }
+}
 @end
