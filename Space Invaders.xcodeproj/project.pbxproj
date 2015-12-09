@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D41A0BC1C187BD200E0CC0A /* GreenCannon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */; };
+		5D41A0BD1C187BD200E0CC0A /* MultiShotPowerUp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */; };
 		5D7A742B1C181B3300C8A629 /* Ball.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7A742A1C181B3300C8A629 /* Ball.m */; };
 		5D7A742D1C182C4400C8A629 /* HaloX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7A742C1C182C4400C8A629 /* HaloX@2x.png */; };
 		5D7A742F1C18366200C8A629 /* HaloBomb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7A742E1C18366200C8A629 /* HaloBomb@2x.png */; };
@@ -48,6 +50,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5D41A0B91C18760800E0CC0A /* ShieldUp.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShieldUp.caf; sourceTree = "<group>"; };
+		5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GreenCannon@2x.png"; sourceTree = "<group>"; };
+		5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MultiShotPowerUp@2x.png"; sourceTree = "<group>"; };
 		5D7A74291C181B3300C8A629 /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
 		5D7A742A1C181B3300C8A629 /* Ball.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ball.m; sourceTree = "<group>"; };
 		5D7A742C1C182C4400C8A629 /* HaloX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HaloX@2x.png"; sourceTree = "<group>"; };
@@ -109,6 +114,7 @@
 		5D7D8ACF1C17022F007D58E1 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
+				5D41A0B91C18760800E0CC0A /* ShieldUp.caf */,
 				5D7D8AD01C17022F007D58E1 /* Bounce.caf */,
 				5D7D8AD11C17022F007D58E1 /* DeepExplosion.caf */,
 				5D7D8AD21C17022F007D58E1 /* Explosion.caf */,
@@ -121,6 +127,8 @@
 		5D7D8AFD1C170986007D58E1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */,
+				5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */,
 				5D7A742E1C18366200C8A629 /* HaloBomb@2x.png */,
 				5D7A742C1C182C4400C8A629 /* HaloX@2x.png */,
 				5D7D8ADE1C1708B6007D58E1 /* Ammo1@2x.png */,
@@ -269,6 +277,7 @@
 				5D7D8AF81C1708B6007D58E1 /* PlayButton@2x.png in Resources */,
 				5D7A742D1C182C4400C8A629 /* HaloX@2x.png in Resources */,
 				E3AE1AD21C12E17B00C3EB59 /* LaunchScreen.storyboard in Resources */,
+				5D41A0BD1C187BD200E0CC0A /* MultiShotPowerUp@2x.png in Resources */,
 				5D7D8AEE1C1708B6007D58E1 /* Ammo1@2x.png in Resources */,
 				5D7D8AF91C1708B6007D58E1 /* ScoreBoard@2x.png in Resources */,
 				5D7D8AF61C1708B6007D58E1 /* Cannon@2x.png in Resources */,
@@ -293,6 +302,7 @@
 				5D7D8AF41C1708B6007D58E1 /* Block@2x.png in Resources */,
 				5D7D8AF51C1708B6007D58E1 /* BlueBar@2x.png in Resources */,
 				5D7D8AD91C17022F007D58E1 /* Zap.caf in Resources */,
+				5D41A0BC1C187BD200E0CC0A /* GreenCannon@2x.png in Resources */,
 				5D7D8AFC1C1708B6007D58E1 /* Title@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
