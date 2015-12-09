@@ -342,6 +342,12 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             [node removeFromParent];
         }
     }];
+    
+    [_mainLayer enumerateChildNodesWithName:@"multiUp" usingBlock:^(SKNode *node, BOOL *stop) {
+        if (node.position.x - node.frame.size.width > self.size.width) {
+            [node removeFromParent];
+        }
+    }];
 }
 
 -(void)didBeginContact:(SKPhysicsContact *)contact
@@ -486,6 +492,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     self.ammo = 5;
     self.score = 0;
     self.pointValue = 1;
+    _killCount = 0;
     
     [_mainLayer removeAllChildren];
     // Setup shields
