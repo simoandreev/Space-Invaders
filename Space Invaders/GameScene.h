@@ -14,5 +14,6 @@
 @property (nonatomic) int score;
 @property (nonatomic, strong) NSNumber *_bufferValueForScore;
 @property (nonatomic) int pointValue;
+@property (nonatomic) BOOL multiMode;
 
 @end
