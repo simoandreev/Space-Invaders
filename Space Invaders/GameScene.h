@@ -13,5 +13,6 @@
 @property (nonatomic) int ammo;
 @property (nonatomic) int score;
 @property (nonatomic, strong) NSNumber *_bufferValueForScore;
+@property (nonatomic) int pointValue;
 
 @end

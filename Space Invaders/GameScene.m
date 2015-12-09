@@ -24,7 +24,7 @@
     SKAction *_zapSound;
     Menu *_menu;
     NSUserDefaults *_userDefaults;
-    
+    SKLabelNode *_pointLabel;
 }
 
 
@@ -42,6 +42,7 @@ static const CGFloat kCCHaloSpeed = 100.0;
 static NSString * const kCCKeyTopScore = @"TopScore";
 
 int numShieldsBlocks;
+int numScaleBackground;
 
 
 static inline CGVector radiansToVector(CGFloat radians)
@@ -63,14 +64,23 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         //Set initial values
         self.ammo = 5;
         self.score = 0;
+        self.pointValue = 1;
         _gameOver = YES;
         _scoreLabel.hidden = YES;
         
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+        {
+            numScaleBackground = 30;
+            numShieldsBlocks = 15;
+        } else {
+            numScaleBackground = 10;
+            numShieldsBlocks = 6;
+        }
         
         // Add background.
         SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"Starfield"];
         //background.size = self.frame.size;
-        background.size = CGSizeMake(self.frame.size.width + 10, self.frame.size.height);
+        background.size = CGSizeMake(self.frame.size.width + numScaleBackground, self.frame.size.height);
         background.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));;
         //background.anchorPoint = CGPointZero;
         background.blendMode = SKBlendModeReplace;
@@ -124,12 +134,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [self runAction:[SKAction repeatActionForever:incrementAmmo]];
         
         // Setup shields
-        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-        {
-            numShieldsBlocks = 15;
-        } else {
-            numShieldsBlocks = 6;
-        }
+        
         if(!_gameOver) {
             for (int i = 0; i < numShieldsBlocks; i++) {
                 SKSpriteNode *shield = [SKSpriteNode spriteNodeWithImageNamed:@"Block"];
@@ -143,18 +148,25 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             
             //Add Life Bar
             SKSpriteNode *lifeBar = [SKSpriteNode spriteNodeWithImageNamed:@"BlueBar"];
-            //lifeBar.size = CGSizeMake(self.frame.size.width-25, 10);
             lifeBar.position = CGPointMake(self.size.width * 0.5, 70);
-            lifeBar.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(-lifeBar.size.width * 0.5, 0) toPoint:CGPointMake(lifeBar.size.width * 0.5, 0)];
+            lifeBar.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(-lifeBar.size.width , 0) toPoint:CGPointMake(lifeBar.size.width , 0)];
+            
             lifeBar.physicsBody.categoryBitMask = kCCLifeBarCategory;
             [_mainLayer addChild:lifeBar];
         }
-            // Setup score display
-            _scoreLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
-            _scoreLabel.position = CGPointMake(15, 10);
-            _scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
-            _scoreLabel.fontSize = 15;
-            [self addChild:_scoreLabel];
+        // Setup score display
+        _scoreLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
+        _scoreLabel.position = CGPointMake(15, 10);
+        _scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        _scoreLabel.fontSize = 15;
+        [self addChild:_scoreLabel];
+        
+        // Setup point multiplier label
+        _pointLabel = [SKLabelNode labelNodeWithFontNamed:@"DIN Alternate"];
+        _pointLabel.position = CGPointMake(15, 30);
+        _pointLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        _pointLabel.fontSize = 15;
+        [self addChild:_pointLabel];
         
         // Setup sounds
         _bounceSound = [SKAction playSoundFileNamed:@"Bounce.caf" waitForCompletion:NO];
@@ -238,8 +250,20 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     halo.physicsBody.friction = 0.0;
     halo.name = @"halo";
     
-    // Random point multiplier
-    if (!_gameOver && arc4random_uniform(6) == 0) {
+    int haloCount = 0;
+    for (SKNode *node in _mainLayer.children) {
+        if ([node.name isEqualToString:@"halo"]) {
+            haloCount++;
+        }
+    }
+    
+    if (haloCount == 4) {
+        // Create bomb powerup
+        halo.texture = [SKTexture textureWithImageNamed:@"HaloBomb"];
+        halo.userData = [[NSMutableDictionary alloc] init];
+        [halo.userData setValue:@YES forKey:@"Bomb"];
+    } else if (!_gameOver && arc4random_uniform(6) == 0) {
+         // Random point multiplier
         halo.texture = [SKTexture textureWithImageNamed:@"HaloX"];
         halo.userData = [[NSMutableDictionary alloc] init];
         [halo.userData setValue:@YES forKey:@"Multiplier"];
@@ -247,7 +271,6 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     
     [_mainLayer addChild:halo];
 }
-
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
@@ -278,6 +301,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         }
         if (!CGRectContainsPoint(self.frame, node.position)) {
             [node removeFromParent];
+            self.pointValue = 1;
         }
     }];
     
@@ -306,6 +330,13 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
         
+        if ([[firstBody.node.userData valueForKey:@"Bomb"] boolValue]) {
+            // Remove all shields.
+            [_mainLayer enumerateChildNodesWithName:@"shield" usingBlock:^(SKNode *node, BOOL *stop) {
+                [node removeFromParent];
+            }];
+        }
+        
         firstBody.categoryBitMask = 0;
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
@@ -315,12 +346,17 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         // Collision between halo and ball.
         [self addExplosion:firstBody.node.position withName:@"HaloExplosion"];
         [self runAction:_explosionSound];
-        self.score++;
+        self.score += self.pointValue;
         
         if ([[firstBody.node.userData valueForKey:@"Multiplier"] boolValue]) {
-            
+            self.pointValue++;
+        } else if ([[firstBody.node.userData valueForKey:@"Bomb"] boolValue]) {
+            firstBody.node.name = nil;
+            [_mainLayer enumerateChildNodesWithName:@"halo" usingBlock:^(SKNode *node, BOOL *stop) {
+                [self addExplosion:node.position withName:@"HaloExplosion"];
+                [node removeFromParent];
+            }];
         }
-        
         firstBody.categoryBitMask = 0;
         [firstBody.node removeFromParent];
         [secondBody.node removeFromParent];
@@ -345,6 +381,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             ((Ball*)firstBody.node).bounces++;
             if (((Ball*)firstBody.node).bounces > 3) {
                 [firstBody.node removeFromParent];
+                self.pointValue = 1;
             }
         }
         
@@ -380,11 +417,18 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _scoreLabel.text = [NSString stringWithFormat:@"Score: %d", score];
 }
 
+-(void)setPointValue:(int)pointValue
+{
+     //Setter - points
+    _pointValue = pointValue;
+    _pointLabel.text = [NSString stringWithFormat:@"Points: x%d", pointValue];
+}
+
 -(void)newGame
 {
     self.ammo = 5;
     self.score = 0;
-    
+    self.pointValue = 1;
     
     [_mainLayer removeAllChildren];
     // Setup shields
@@ -408,6 +452,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _gameOver = NO;
     _menu.hidden = YES;
     _scoreLabel.hidden = NO;
+    _pointLabel.hidden = NO;
 }
 
 -(void)gameOver
@@ -433,6 +478,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _gameOver = YES;
     _menu.hidden = NO;
     _scoreLabel.hidden = YES;
+    _pointLabel.hidden = YES;
 
 }
 
