@@ -28,6 +28,8 @@
     SKLabelNode *_pointLabel;
     NSMutableArray *_shieldPool;
     int _killCount;
+    SKSpriteNode *_pauseButton;
+    SKSpriteNode *_resumeButton;
 }
 
 
@@ -210,6 +212,20 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         SKAction *spawnShieldPowerUp = [SKAction sequence:@[[SKAction waitForDuration:5 withRange:4],
                                                             [SKAction performSelector:@selector(spawnShieldPowerUp) onTarget:self]]];
         [self runAction:[SKAction repeatActionForever:spawnShieldPowerUp]];
+        
+        // Setup pause button
+        _pauseButton = [SKSpriteNode spriteNodeWithImageNamed:@"PauseButton"];
+        _pauseButton.position = CGPointMake(self.size.width - 30, 20);
+        [self addChild:_pauseButton];
+        _pauseButton.hidden = YES;
+        
+        // Setup resume button
+        _resumeButton = [SKSpriteNode spriteNodeWithImageNamed:@"ResumeButton"];
+        _resumeButton.position = CGPointMake(self.size.width * 0.5, self.size.height * 0.5);
+        [self addChild:_resumeButton];
+        _resumeButton.hidden = YES;
+        
+        
     }
     
     return  self;
@@ -533,6 +549,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _killCount = 0;
     self.multiMode = NO;
     _killCount = 0;
+    _pauseButton.hidden = NO;
     
     [_mainLayer removeAllChildren];
     // Setup shields
@@ -554,9 +571,9 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     [self actionForKey:@"SpawnHalo"].speed = 1.0;
     
     _gameOver = NO;
-    _menu.hidden = YES;
     _scoreLabel.hidden = NO;
     _pointLabel.hidden = NO;
+    [_menu hide];
 }
 
 -(void)gameOver
@@ -584,15 +601,19 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     }];
     
     _gameOver = YES;
-    _menu.hidden = NO;
     _scoreLabel.hidden = YES;
     _pointLabel.hidden = YES;
+    _pauseButton.hidden = YES;
+    
+    [self runAction:[SKAction waitForDuration:1.0] completion:^{
+        [_menu show];
+    }];
 
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
-        if (_gameOver) {
+        if (_gameOver && _menu.touchable) {
             SKNode *n = [_menu nodeAtPoint:[touch locationInNode:_menu]];
             if ([n.name isEqualToString:@"Play"]) {
                 [self newGame];
