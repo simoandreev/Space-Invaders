@@ -239,6 +239,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             _audioPlayer.numberOfLoops = -1;
             _audioPlayer.volume = 0.8;
             [_audioPlayer play];
+            _menu.musicPlaying = YES;
         }
     }
     
