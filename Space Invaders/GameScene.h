@@ -7,6 +7,7 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface GameScene : SKScene <SKPhysicsContactDelegate>
 
@@ -15,5 +16,6 @@
 @property (nonatomic, strong) NSNumber *_bufferValueForScore;
 @property (nonatomic) int pointValue;
 @property (nonatomic) BOOL multiMode;
+@property (nonatomic) BOOL gamePaused;
 
 @end
