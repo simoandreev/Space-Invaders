@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		5D41A0BC1C187BD200E0CC0A /* GreenCannon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */; };
 		5D41A0BD1C187BD200E0CC0A /* MultiShotPowerUp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */; };
+		5D41A0BE1C1973A100E0CC0A /* ShieldUp.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0B91C18760800E0CC0A /* ShieldUp.caf */; };
+		5D41A0C11C1995C400E0CC0A /* PauseButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0BF1C1995C400E0CC0A /* PauseButton@2x.png */; };
+		5D41A0C21C1995C400E0CC0A /* ResumeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D41A0C01C1995C400E0CC0A /* ResumeButton@2x.png */; };
 		5D7A742B1C181B3300C8A629 /* Ball.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7A742A1C181B3300C8A629 /* Ball.m */; };
 		5D7A742D1C182C4400C8A629 /* HaloX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7A742C1C182C4400C8A629 /* HaloX@2x.png */; };
 		5D7A742F1C18366200C8A629 /* HaloBomb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D7A742E1C18366200C8A629 /* HaloBomb@2x.png */; };
@@ -53,6 +56,8 @@
 		5D41A0B91C18760800E0CC0A /* ShieldUp.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShieldUp.caf; sourceTree = "<group>"; };
 		5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GreenCannon@2x.png"; sourceTree = "<group>"; };
 		5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MultiShotPowerUp@2x.png"; sourceTree = "<group>"; };
+		5D41A0BF1C1995C400E0CC0A /* PauseButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PauseButton@2x.png"; sourceTree = "<group>"; };
+		5D41A0C01C1995C400E0CC0A /* ResumeButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ResumeButton@2x.png"; sourceTree = "<group>"; };
 		5D7A74291C181B3300C8A629 /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
 		5D7A742A1C181B3300C8A629 /* Ball.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ball.m; sourceTree = "<group>"; };
 		5D7A742C1C182C4400C8A629 /* HaloX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HaloX@2x.png"; sourceTree = "<group>"; };
@@ -127,6 +132,8 @@
 		5D7D8AFD1C170986007D58E1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				5D41A0BF1C1995C400E0CC0A /* PauseButton@2x.png */,
+				5D41A0C01C1995C400E0CC0A /* ResumeButton@2x.png */,
 				5D41A0BA1C187BD200E0CC0A /* GreenCannon@2x.png */,
 				5D41A0BB1C187BD200E0CC0A /* MultiShotPowerUp@2x.png */,
 				5D7A742E1C18366200C8A629 /* HaloBomb@2x.png */,
@@ -270,6 +277,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D41A0BE1C1973A100E0CC0A /* ShieldUp.caf in Resources */,
 				5D7D8AF21C1708B6007D58E1 /* Ammo5@2x.png in Resources */,
 				E3AE1AC71C12E17B00C3EB59 /* GameScene.sks in Resources */,
 				5D7D8ABA1C15E4BF007D58E1 /* BounceExplosion.sks in Resources */,
@@ -292,6 +300,7 @@
 				5D7D8AFA1C1708B6007D58E1 /* spark.png in Resources */,
 				E3AE1ACD1C12E17B00C3EB59 /* Main.storyboard in Resources */,
 				5D7D8AD71C17022F007D58E1 /* Explosion.caf in Resources */,
+				5D41A0C21C1995C400E0CC0A /* ResumeButton@2x.png in Resources */,
 				5D7D8AF71C1708B6007D58E1 /* Halo@2x.png in Resources */,
 				5D7D8AFB1C1708B6007D58E1 /* Starfield@2x.png in Resources */,
 				E3AE1AF61C176C2200C3EB59 /* BallTrail.sks in Resources */,
@@ -302,6 +311,7 @@
 				5D7D8AF41C1708B6007D58E1 /* Block@2x.png in Resources */,
 				5D7D8AF51C1708B6007D58E1 /* BlueBar@2x.png in Resources */,
 				5D7D8AD91C17022F007D58E1 /* Zap.caf in Resources */,
+				5D41A0C11C1995C400E0CC0A /* PauseButton@2x.png in Resources */,
 				5D41A0BC1C187BD200E0CC0A /* GreenCannon@2x.png in Resources */,
 				5D7D8AFC1C1708B6007D58E1 /* Title@2x.png in Resources */,
 			);
