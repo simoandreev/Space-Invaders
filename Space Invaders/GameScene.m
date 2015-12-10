@@ -30,6 +30,7 @@
     int _killCount;
     SKSpriteNode *_pauseButton;
     SKSpriteNode *_resumeButton;
+    AVAudioPlayer *_audioPlayer;
 }
 
 
@@ -194,6 +195,9 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         _userDefaults = [NSUserDefaults standardUserDefaults];
         _menu.topScore = [_userDefaults integerForKey:kCCKeyTopScore];
         
+        //Setup Music button
+        _menu.musicPlaying = YES;
+        
         // Setup shield pool
         _shieldPool = [[NSMutableArray alloc] init];
         
@@ -225,7 +229,17 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         [self addChild:_resumeButton];
         _resumeButton.hidden = YES;
         
-        
+        // Load music
+        NSURL *url = [[NSBundle mainBundle] URLForResource:@"ObservingTheStar" withExtension:@"caf"];
+        NSError *error = nil;
+        _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
+        if (!_audioPlayer) {
+            NSLog(@"Error loading audio player: %@", error);
+        } else {
+            _audioPlayer.numberOfLoops = -1;
+            _audioPlayer.volume = 0.8;
+            [_audioPlayer play];
+        }
     }
     
     return  self;
@@ -319,16 +333,25 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
-    //for (UITouch *touch in touches) {
-        if (!_gameOver) {
-            _didShoot = YES;
+    for (UITouch *touch in touches) {
+        if (!_gameOver && !self.gamePaused) {
+            if (![_pauseButton containsPoint:[touch locationInNode:_pauseButton.parent]]) {
+                _didShoot = YES;
+            }
         }
-    //}
+    }
 }
 
 -(void)update:(CFTimeInterval)currentTime {
     /* Called before each frame is rendered */
+        if (_gamePaused) {
+            self.paused = YES;
+        }
+        if (!_gamePaused) {
+            self.paused = NO;
+        }
 }
+
 
 -(void)didSimulatePhysics
 {
@@ -417,7 +440,7 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
         }
         
         _killCount++;
-        if (_killCount % 2 == 0) {
+        if (_killCount % 5 == 0) {
             [self spawnMultiShotPowerUp];
         }
         
@@ -535,6 +558,17 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
     _pointLabel.text = [NSString stringWithFormat:@"Points: x%d", pointValue];
 }
 
+-(void)setGamePaused:(BOOL)gamePaused
+{
+    //Setter - Game Pause
+    if (!_gameOver) {
+        _gamePaused = gamePaused;
+        _pauseButton.hidden = gamePaused;
+        _resumeButton.hidden = !gamePaused;
+        self.paused = gamePaused;
+    }
+}
+
 -(void)newGame
 {
     // Add all shields from pool to scene.
@@ -617,6 +651,24 @@ static inline CGFloat randomInRange(CGFloat low, CGFloat high)
             SKNode *n = [_menu nodeAtPoint:[touch locationInNode:_menu]];
             if ([n.name isEqualToString:@"Play"]) {
                 [self newGame];
+            }
+            if ([n.name isEqualToString:@"Music"]) {
+                _menu.musicPlaying = !_menu.musicPlaying;
+                if (_menu.musicPlaying) {
+                    [_audioPlayer play];
+                } else {
+                    [_audioPlayer stop];
+                }
+            }
+        } else if (!_gameOver) {
+            if (self.gamePaused) {
+                if ([_resumeButton containsPoint:[touch locationInNode:_resumeButton.parent]]) {
+                    self.gamePaused = NO;
+                }
+            } else {
+                if ([_pauseButton containsPoint:[touch locationInNode:_pauseButton.parent]]) {
+                    self.gamePaused = YES;
+                }
             }
         }
     }
